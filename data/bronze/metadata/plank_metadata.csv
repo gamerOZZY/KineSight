@@ -1,0 +1,15 @@
+video_id,Participant_id,excercise,label,camera_view,duration_in_seconds,fps
+P01,P1,plank,correct,side,2.633,30.0
+P02,P2,plank,correct,side,5.567,30.0
+P03,P3,plank,correct,back-side,1.733,30.0
+P04,P5,plank,correct,side,3.0,30.0
+P05,P6,plank,correct,side,2.733,30.0
+P06,P6,plank,correct,side,3.767,30.0
+P07,P7,plank,correct,side,3.033,30.0
+P08,P1,plank,incorrect,side,4.567,30.0
+P09,P2,plank,incorrect,side,1.867,30.0
+P10,P4,plank,incorrect,side,1.067,30.0
+P11,P3,plank,incorrect,back-side,2.2,30.0
+P12,P3,plank,incorrect,back-side,2.767,30.0
+P13,P6,plank,incorrect,side,3.767,30.0
+P14,P6,plank,incorrect,side,4.133,30.0
