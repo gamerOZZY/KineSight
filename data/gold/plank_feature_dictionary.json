@@ -1,0 +1,149 @@
+{
+  "exercise": "plank",
+  "coordinate_system": "MediaPipe Pose World Landmarks; origen al centro de caderas; sin traslación adicional.",
+  "features": {
+    "shoulder_hip_ankle_angle": {
+      "definition": "Ángulo en el centro de caderas entre hombros y tobillos.",
+      "formula": "angle(centro_hombros, centro_caderas, centro_tobillos)",
+      "units": "degrees",
+      "landmarks": [
+        "left_shoulder",
+        "right_shoulder",
+        "left_hip",
+        "right_hip",
+        "left_ankle",
+        "right_ankle"
+      ]
+    },
+    "shoulder_hip_knee_angle": {
+      "definition": "Ángulo en el centro de caderas entre hombros y rodillas.",
+      "formula": "angle(centro_hombros, centro_caderas, centro_rodillas)",
+      "units": "degrees",
+      "landmarks": [
+        "left_shoulder",
+        "right_shoulder",
+        "left_hip",
+        "right_hip",
+        "left_knee",
+        "right_knee"
+      ]
+    },
+    "hip_knee_ankle_angle": {
+      "definition": "Ángulo en el centro de rodillas entre caderas y tobillos.",
+      "formula": "angle(centro_caderas, centro_rodillas, centro_tobillos)",
+      "units": "degrees",
+      "landmarks": [
+        "left_hip",
+        "right_hip",
+        "left_knee",
+        "right_knee",
+        "left_ankle",
+        "right_ankle"
+      ]
+    },
+    "shoulder_elbow_wrist_angle": {
+      "definition": "Media de los ángulos izquierdo y derecho en los codos.",
+      "formula": "mean(angle(hombro, codo, muñeca) por lado)",
+      "units": "degrees",
+      "landmarks": [
+        "left_shoulder",
+        "right_shoulder",
+        "left_elbow",
+        "right_elbow",
+        "left_wrist",
+        "right_wrist"
+      ]
+    },
+    "elbow_shoulder_hip_angle": {
+      "definition": "Media de los ángulos izquierdo y derecho en los hombros.",
+      "formula": "mean(angle(codo, hombro, cadera) por lado)",
+      "units": "degrees",
+      "landmarks": [
+        "left_elbow",
+        "right_elbow",
+        "left_shoulder",
+        "right_shoulder",
+        "left_hip",
+        "right_hip"
+      ]
+    },
+    "head_neck_alignment": {
+      "definition": "Ángulo en los hombros entre el punto medio de orejas y caderas.",
+      "formula": "angle(centro_orejas, centro_hombros, centro_caderas)",
+      "units": "degrees",
+      "landmarks": [
+        "left_ear",
+        "right_ear",
+        "left_shoulder",
+        "right_shoulder",
+        "left_hip",
+        "right_hip"
+      ]
+    },
+    "hip_deviation_norm": {
+      "definition": "Distancia 3D de caderas a la línea hombros-tobillos, dividida por longitud de torso.",
+      "formula": "distancia_punto_linea(caderas, hombros, tobillos) / distancia(hombros, caderas)",
+      "units": "torso_lengths",
+      "landmarks": [
+        "left_shoulder",
+        "right_shoulder",
+        "left_hip",
+        "right_hip",
+        "left_ankle",
+        "right_ankle"
+      ]
+    },
+    "hip_vertical_deviation_norm": {
+      "definition": "Componente vertical del residuo caderas-línea hombros-tobillos, normalizada por longitud de torso.",
+      "formula": "abs(residuo_y(caderas, linea_hombros_tobillos)) / distancia(hombros, caderas)",
+      "units": "torso_lengths",
+      "landmarks": [
+        "left_shoulder",
+        "right_shoulder",
+        "left_hip",
+        "right_hip",
+        "left_ankle",
+        "right_ankle"
+      ]
+    }
+  },
+  "temporal_aggregation": {
+    "window_seconds": 2.0,
+    "target_fps": 5.0,
+    "minimum_valid_frames_per_feature": 5,
+    "resample_tolerance_ms": 100,
+    "interpolation": "none",
+    "statistics": {
+      "mean": {
+        "definition": "Media aritmética de los valores válidos de la característica.",
+        "formula": "sum(values) / count(values)",
+        "units": "same_as_feature"
+      },
+      "std": {
+        "definition": "Desviación estándar poblacional de los valores válidos.",
+        "formula": "sqrt(mean((value - mean(values)) ** 2))",
+        "units": "same_as_feature"
+      },
+      "min": {
+        "definition": "Valor mínimo válido en la ventana.",
+        "formula": "min(values)",
+        "units": "same_as_feature"
+      },
+      "max": {
+        "definition": "Valor máximo válido en la ventana.",
+        "formula": "max(values)",
+        "units": "same_as_feature"
+      },
+      "range": {
+        "definition": "Diferencia entre el máximo y el mínimo válidos.",
+        "formula": "max(values) - min(values)",
+        "units": "same_as_feature"
+      },
+      "slope": {
+        "definition": "Pendiente OLS de la característica respecto al tiempo.",
+        "formula": "cov(time_seconds, values) / var(time_seconds)",
+        "units": "feature_units_per_second"
+      }
+    }
+  }
+}

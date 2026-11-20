@@ -1,0 +1,145 @@
+{
+  "exercise": "hollow_body",
+  "coordinate_system": "MediaPipe Pose World Landmarks; origen al centro de caderas; sin traslación adicional.",
+  "features": {
+    "shoulder_hip_knee_angle": {
+      "definition": "Ángulo en el centro de caderas entre hombros y rodillas.",
+      "formula": "angle(centro_hombros, centro_caderas, centro_rodillas)",
+      "units": "degrees",
+      "landmarks": [
+        "left_shoulder",
+        "right_shoulder",
+        "left_hip",
+        "right_hip",
+        "left_knee",
+        "right_knee"
+      ]
+    },
+    "hip_knee_ankle_angle": {
+      "definition": "Ángulo en el centro de rodillas entre caderas y tobillos.",
+      "formula": "angle(centro_caderas, centro_rodillas, centro_tobillos)",
+      "units": "degrees",
+      "landmarks": [
+        "left_hip",
+        "right_hip",
+        "left_knee",
+        "right_knee",
+        "left_ankle",
+        "right_ankle"
+      ]
+    },
+    "torso_orientation": {
+      "definition": "Orientación del torso respecto al eje vertical del sistema de coordenadas world.",
+      "formula": "acos(abs(vector_torso_y) / longitud(vector_torso))",
+      "units": "degrees",
+      "landmarks": [
+        "left_shoulder",
+        "right_shoulder",
+        "left_hip",
+        "right_hip"
+      ]
+    },
+    "leg_elevation_angle": {
+      "definition": "Elevación del vector caderas-tobillos respecto al plano horizontal.",
+      "formula": "atan2(abs(vector_y), norm(vector_xz))",
+      "units": "degrees",
+      "landmarks": [
+        "left_hip",
+        "right_hip",
+        "left_ankle",
+        "right_ankle"
+      ]
+    },
+    "arm_alignment_angle": {
+      "definition": "Ángulo en los hombros entre muñecas y caderas.",
+      "formula": "angle(centro_munecas, centro_hombros, centro_caderas)",
+      "units": "degrees",
+      "landmarks": [
+        "left_wrist",
+        "right_wrist",
+        "left_shoulder",
+        "right_shoulder",
+        "left_hip",
+        "right_hip"
+      ]
+    },
+    "head_alignment_angle": {
+      "definition": "Ángulo en los hombros entre el punto medio de orejas y caderas.",
+      "formula": "angle(centro_orejas, centro_hombros, centro_caderas)",
+      "units": "degrees",
+      "landmarks": [
+        "left_ear",
+        "right_ear",
+        "left_shoulder",
+        "right_shoulder",
+        "left_hip",
+        "right_hip"
+      ]
+    },
+    "shoulder_hip_distance_norm": {
+      "definition": "Distancia hombros-caderas normalizada por distancia hombros-tobillos.",
+      "formula": "distancia(hombros, caderas) / distancia(hombros, tobillos)",
+      "units": "dimensionless",
+      "landmarks": [
+        "left_shoulder",
+        "right_shoulder",
+        "left_hip",
+        "right_hip",
+        "left_ankle",
+        "right_ankle"
+      ]
+    },
+    "hip_ankle_distance_norm": {
+      "definition": "Distancia caderas-tobillos normalizada por longitud de torso hombros-caderas.",
+      "formula": "distancia(caderas, tobillos) / distancia(hombros, caderas)",
+      "units": "dimensionless",
+      "landmarks": [
+        "left_shoulder",
+        "right_shoulder",
+        "left_hip",
+        "right_hip",
+        "left_ankle",
+        "right_ankle"
+      ]
+    }
+  },
+  "temporal_aggregation": {
+    "window_seconds": 2.0,
+    "target_fps": 5.0,
+    "minimum_valid_frames_per_feature": 5,
+    "resample_tolerance_ms": 100,
+    "interpolation": "none",
+    "statistics": {
+      "mean": {
+        "definition": "Media aritmética de los valores válidos de la característica.",
+        "formula": "sum(values) / count(values)",
+        "units": "same_as_feature"
+      },
+      "std": {
+        "definition": "Desviación estándar poblacional de los valores válidos.",
+        "formula": "sqrt(mean((value - mean(values)) ** 2))",
+        "units": "same_as_feature"
+      },
+      "min": {
+        "definition": "Valor mínimo válido en la ventana.",
+        "formula": "min(values)",
+        "units": "same_as_feature"
+      },
+      "max": {
+        "definition": "Valor máximo válido en la ventana.",
+        "formula": "max(values)",
+        "units": "same_as_feature"
+      },
+      "range": {
+        "definition": "Diferencia entre el máximo y el mínimo válidos.",
+        "formula": "max(values) - min(values)",
+        "units": "same_as_feature"
+      },
+      "slope": {
+        "definition": "Pendiente OLS de la característica respecto al tiempo.",
+        "formula": "cov(time_seconds, values) / var(time_seconds)",
+        "units": "feature_units_per_second"
+      }
+    }
+  }
+}
