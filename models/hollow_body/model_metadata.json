@@ -99,11 +99,12 @@
   "python_version": "3.12.10",
   "library_versions": {
     "scikit_learn": "1.9.1",
+    "xgboost": "3.4.1",
     "numpy": "2.5.5",
     "pandas": "3.1.1",
     "joblib": "1.6.0"
   },
-  "trained_at_utc": "2026-11-24T02:10:55.723890+00:00",
+  "trained_at_utc": "2026-11-24T02:17:33.439243+00:00",
   "final_fit_group_cv_macro_f1": 0.8317198590882802,
   "scaling_applied": true,
   "feature_importance_warning": "Las importancias son asociativas y no representan causalidad biomecánica.",

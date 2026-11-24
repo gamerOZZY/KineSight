@@ -19,8 +19,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import sklearn
-from sklearn.base import clone
-from sklearn.ensemble import ExtraTreesClassifier, HistGradientBoostingClassifier, RandomForestClassifier
+import xgboost
+from sklearn.base import BaseEstimator, ClassifierMixin, clone
+from sklearn.ensemble import (
+    ExtraTreesClassifier,
+    HistGradientBoostingClassifier,
+    RandomForestClassifier,
+)
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
@@ -38,6 +43,7 @@ from sklearn.model_selection import RandomizedSearchCV, StratifiedGroupKFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
+from xgboost import XGBClassifier
 
 from src.features.biomechanics import feature_dictionary
 
@@ -84,6 +90,29 @@ def _feature_columns(frame: pd.DataFrame, exercise: str) -> list[str]:
     if forbidden:
         raise ValueError(f"Se intentó usar metadata como característica: {sorted(forbidden)}")
     return columns
+
+
+class LabelEncodedClassifier(ClassifierMixin, BaseEstimator):
+    """Adapt classifiers that require integer targets to string class labels."""
+
+    def __init__(self, estimator: Any):
+        self.estimator = estimator
+
+    def fit(self, X: Any, y: Any) -> LabelEncodedClassifier:
+        self.classes_, encoded_labels = np.unique(np.asarray(y), return_inverse=True)
+        self.estimator_ = clone(self.estimator).fit(X, encoded_labels)
+        return self
+
+    def predict(self, X: Any) -> np.ndarray:
+        encoded_predictions = np.asarray(self.estimator_.predict(X), dtype=int)
+        return self.classes_[encoded_predictions]
+
+    def predict_proba(self, X: Any) -> np.ndarray:
+        return self.estimator_.predict_proba(X)
+
+    @property
+    def feature_importances_(self) -> np.ndarray:
+        return self.estimator_.feature_importances_
 
 
 def load_exercise_dataset(
@@ -298,7 +327,7 @@ def _candidate_models(exercise: str) -> dict[str, tuple[Pipeline, dict[str, list
 
     return {
         "logistic_regression": (
-            pipeline(LogisticRegression(ma_iter=3000, random_state=seed), scale=True),
+            pipeline(LogisticRegression(max_iter=3000, random_state=seed), scale=True),
             {
                 "classifier__C": [0.05, 0.2, 1.0, 5.0, 20.0],
                 "classifier__class_weight": [None, "balanced"],
@@ -353,6 +382,29 @@ def _candidate_models(exercise: str) -> dict[str, tuple[Pipeline, dict[str, list
                 "classifier__max_leaf_nodes": [3, 7, 15],
                 "classifier__l2_regularization": [0.0, 0.5, 2.0],
                 "classifier__class_weight": [None, "balanced"],
+            },
+            False,
+        ),
+        "xgboost": (
+            pipeline(
+                LabelEncodedClassifier(
+                    XGBClassifier(
+                        objective="binary:logistic",
+                        eval_metric="logloss",
+                        tree_method="hist",
+                        random_state=seed,
+                        n_jobs=1,
+                    )
+                ),
+                scale=False,
+            ),
+            {
+                "classifier__estimator__n_estimators": [50, 100, 200],
+                "classifier__estimator__max_depth": [2, 3, 4],
+                "classifier__estimator__learning_rate": [0.03, 0.1, 0.2],
+                "classifier__estimator__subsample": [0.7, 1.0],
+                "classifier__estimator__colsample_bytree": [0.7, 1.0],
+                "classifier__estimator__reg_lambda": [1.0, 5.0, 10.0],
             },
             False,
         ),
@@ -787,6 +839,7 @@ def run_experiment(project_root: Path, exercise: str) -> dict[str, Any]:
         "python_version": platform.python_version(),
         "library_versions": {
             "scikit_learn": sklearn.__version__,
+            "xgboost": xgboost.__version__,
             "numpy": np.__version__,
             "pandas": pd.__version__,
             "joblib": joblib.__version__,

@@ -66,6 +66,10 @@ python evaluate_plank.py
 python evaluate_hollow_body.py
 ```
 
+The comparison includes Logistic Regression, SVM, Random Forest, Extra Trees,
+HistGradientBoosting, and XGBoost. XGBoost is installed with the other project
+dependencies (`pip install -r requirements.txt`).
+
 Reports are written under `reports/<exercise>/`; the refitted pipelines and
 metadata are saved under `models/<exercise>/`. The current datasets contain
 few participants, so the selected model and cross-validation estimates must be
