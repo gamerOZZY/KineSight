@@ -1,4 +1,4 @@
-# KineSight — Entregable 1
+# KineSight
 
 Sistema de visión por computadora para evaluar en tiempo real la ejecución de
 **Plank** y **Hollow Body Hold**. El alcance actual es clasificación binaria por
