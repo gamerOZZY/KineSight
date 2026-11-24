@@ -1,0 +1,295 @@
+{
+  "exercise": "plank",
+  "samples": 28,
+  "participants": 7,
+  "videos": 14,
+  "windows": 28,
+  "predictor_count": 48,
+  "predictors": [
+    "shoulder_hip_ankle_angle_mean",
+    "shoulder_hip_ankle_angle_std",
+    "shoulder_hip_ankle_angle_min",
+    "shoulder_hip_ankle_angle_max",
+    "shoulder_hip_ankle_angle_range",
+    "shoulder_hip_ankle_angle_slope",
+    "shoulder_hip_knee_angle_mean",
+    "shoulder_hip_knee_angle_std",
+    "shoulder_hip_knee_angle_min",
+    "shoulder_hip_knee_angle_max",
+    "shoulder_hip_knee_angle_range",
+    "shoulder_hip_knee_angle_slope",
+    "hip_knee_ankle_angle_mean",
+    "hip_knee_ankle_angle_std",
+    "hip_knee_ankle_angle_min",
+    "hip_knee_ankle_angle_max",
+    "hip_knee_ankle_angle_range",
+    "hip_knee_ankle_angle_slope",
+    "shoulder_elbow_wrist_angle_mean",
+    "shoulder_elbow_wrist_angle_std",
+    "shoulder_elbow_wrist_angle_min",
+    "shoulder_elbow_wrist_angle_max",
+    "shoulder_elbow_wrist_angle_range",
+    "shoulder_elbow_wrist_angle_slope",
+    "elbow_shoulder_hip_angle_mean",
+    "elbow_shoulder_hip_angle_std",
+    "elbow_shoulder_hip_angle_min",
+    "elbow_shoulder_hip_angle_max",
+    "elbow_shoulder_hip_angle_range",
+    "elbow_shoulder_hip_angle_slope",
+    "head_neck_alignment_mean",
+    "head_neck_alignment_std",
+    "head_neck_alignment_min",
+    "head_neck_alignment_max",
+    "head_neck_alignment_range",
+    "head_neck_alignment_slope",
+    "hip_deviation_norm_mean",
+    "hip_deviation_norm_std",
+    "hip_deviation_norm_min",
+    "hip_deviation_norm_max",
+    "hip_deviation_norm_range",
+    "hip_deviation_norm_slope",
+    "hip_vertical_deviation_norm_mean",
+    "hip_vertical_deviation_norm_std",
+    "hip_vertical_deviation_norm_min",
+    "hip_vertical_deviation_norm_max",
+    "hip_vertical_deviation_norm_range",
+    "hip_vertical_deviation_norm_slope"
+  ],
+  "class_counts": {
+    "correct": 14,
+    "incorrect": 14
+  },
+  "participants_per_class": {
+    "correct": 6,
+    "incorrect": 5
+  },
+  "samples_per_participant": {
+    "P1": 5,
+    "P2": 4,
+    "P3": 5,
+    "P4": 1,
+    "P5": 2,
+    "P6": 9,
+    "P7": 2
+  },
+  "samples_per_video": {
+    "P01": 2,
+    "P02": 3,
+    "P03": 1,
+    "P04": 2,
+    "P05": 2,
+    "P06": 2,
+    "P07": 2,
+    "P08": 3,
+    "P09": 1,
+    "P10": 1,
+    "P11": 2,
+    "P12": 2,
+    "P13": 2,
+    "P14": 3
+  },
+  "error_type_counts": {
+    "<null>": 28
+  },
+  "missing_values_per_feature": {
+    "shoulder_hip_ankle_angle_mean": 6,
+    "shoulder_hip_ankle_angle_std": 6,
+    "shoulder_hip_ankle_angle_min": 6,
+    "shoulder_hip_ankle_angle_max": 6,
+    "shoulder_hip_ankle_angle_range": 6,
+    "shoulder_hip_ankle_angle_slope": 6,
+    "shoulder_hip_knee_angle_mean": 6,
+    "shoulder_hip_knee_angle_std": 6,
+    "shoulder_hip_knee_angle_min": 6,
+    "shoulder_hip_knee_angle_max": 6,
+    "shoulder_hip_knee_angle_range": 6,
+    "shoulder_hip_knee_angle_slope": 6,
+    "hip_knee_ankle_angle_mean": 6,
+    "hip_knee_ankle_angle_std": 6,
+    "hip_knee_ankle_angle_min": 6,
+    "hip_knee_ankle_angle_max": 6,
+    "hip_knee_ankle_angle_range": 6,
+    "hip_knee_ankle_angle_slope": 6,
+    "shoulder_elbow_wrist_angle_mean": 5,
+    "shoulder_elbow_wrist_angle_std": 5,
+    "shoulder_elbow_wrist_angle_min": 5,
+    "shoulder_elbow_wrist_angle_max": 5,
+    "shoulder_elbow_wrist_angle_range": 5,
+    "shoulder_elbow_wrist_angle_slope": 5,
+    "elbow_shoulder_hip_angle_mean": 5,
+    "elbow_shoulder_hip_angle_std": 5,
+    "elbow_shoulder_hip_angle_min": 5,
+    "elbow_shoulder_hip_angle_max": 5,
+    "elbow_shoulder_hip_angle_range": 5,
+    "elbow_shoulder_hip_angle_slope": 5,
+    "head_neck_alignment_mean": 5,
+    "head_neck_alignment_std": 5,
+    "head_neck_alignment_min": 5,
+    "head_neck_alignment_max": 5,
+    "head_neck_alignment_range": 5,
+    "head_neck_alignment_slope": 5,
+    "hip_deviation_norm_mean": 6,
+    "hip_deviation_norm_std": 6,
+    "hip_deviation_norm_min": 6,
+    "hip_deviation_norm_max": 6,
+    "hip_deviation_norm_range": 6,
+    "hip_deviation_norm_slope": 6,
+    "hip_vertical_deviation_norm_mean": 6,
+    "hip_vertical_deviation_norm_std": 6,
+    "hip_vertical_deviation_norm_min": 6,
+    "hip_vertical_deviation_norm_max": 6,
+    "hip_vertical_deviation_norm_range": 6,
+    "hip_vertical_deviation_norm_slope": 6
+  },
+  "infinite_values_per_feature": {
+    "shoulder_hip_ankle_angle_mean": 0,
+    "shoulder_hip_ankle_angle_std": 0,
+    "shoulder_hip_ankle_angle_min": 0,
+    "shoulder_hip_ankle_angle_max": 0,
+    "shoulder_hip_ankle_angle_range": 0,
+    "shoulder_hip_ankle_angle_slope": 0,
+    "shoulder_hip_knee_angle_mean": 0,
+    "shoulder_hip_knee_angle_std": 0,
+    "shoulder_hip_knee_angle_min": 0,
+    "shoulder_hip_knee_angle_max": 0,
+    "shoulder_hip_knee_angle_range": 0,
+    "shoulder_hip_knee_angle_slope": 0,
+    "hip_knee_ankle_angle_mean": 0,
+    "hip_knee_ankle_angle_std": 0,
+    "hip_knee_ankle_angle_min": 0,
+    "hip_knee_ankle_angle_max": 0,
+    "hip_knee_ankle_angle_range": 0,
+    "hip_knee_ankle_angle_slope": 0,
+    "shoulder_elbow_wrist_angle_mean": 0,
+    "shoulder_elbow_wrist_angle_std": 0,
+    "shoulder_elbow_wrist_angle_min": 0,
+    "shoulder_elbow_wrist_angle_max": 0,
+    "shoulder_elbow_wrist_angle_range": 0,
+    "shoulder_elbow_wrist_angle_slope": 0,
+    "elbow_shoulder_hip_angle_mean": 0,
+    "elbow_shoulder_hip_angle_std": 0,
+    "elbow_shoulder_hip_angle_min": 0,
+    "elbow_shoulder_hip_angle_max": 0,
+    "elbow_shoulder_hip_angle_range": 0,
+    "elbow_shoulder_hip_angle_slope": 0,
+    "head_neck_alignment_mean": 0,
+    "head_neck_alignment_std": 0,
+    "head_neck_alignment_min": 0,
+    "head_neck_alignment_max": 0,
+    "head_neck_alignment_range": 0,
+    "head_neck_alignment_slope": 0,
+    "hip_deviation_norm_mean": 0,
+    "hip_deviation_norm_std": 0,
+    "hip_deviation_norm_min": 0,
+    "hip_deviation_norm_max": 0,
+    "hip_deviation_norm_range": 0,
+    "hip_deviation_norm_slope": 0,
+    "hip_vertical_deviation_norm_mean": 0,
+    "hip_vertical_deviation_norm_std": 0,
+    "hip_vertical_deviation_norm_min": 0,
+    "hip_vertical_deviation_norm_max": 0,
+    "hip_vertical_deviation_norm_range": 0,
+    "hip_vertical_deviation_norm_slope": 0
+  },
+  "constant_features": [],
+  "duplicate_video_window_keys": 0,
+  "all_scalar_duplicate_rows": 0,
+  "metadata_columns": [
+    "video_id",
+    "participant_id",
+    "exercise",
+    "window_start_ms",
+    "window_end_ms",
+    "label",
+    "error_type",
+    "camera_view",
+    "source_video"
+  ],
+  "label_only_participants": {
+    "P4": [
+      [
+        "P4",
+        "incorrect"
+      ]
+    ],
+    "P5": [
+      [
+        "P5",
+        "correct"
+      ]
+    ],
+    "P7": [
+      [
+        "P7",
+        "correct"
+      ]
+    ]
+  },
+  "outer_cv": {
+    "strategy": "StratifiedGroupKFold",
+    "n_splits": 5,
+    "seed": 42,
+    "folds": [
+      {
+        "fold": 1,
+        "train_samples": 23,
+        "valid_samples": 5,
+        "train_participants": 6,
+        "valid_participants": 1,
+        "valid_classes": {
+          "incorrect": 4,
+          "correct": 1
+        },
+        "participant_overlap": []
+      },
+      {
+        "fold": 2,
+        "train_samples": 24,
+        "valid_samples": 4,
+        "train_participants": 6,
+        "valid_participants": 1,
+        "valid_classes": {
+          "correct": 3,
+          "incorrect": 1
+        },
+        "participant_overlap": []
+      },
+      {
+        "fold": 3,
+        "train_samples": 17,
+        "valid_samples": 11,
+        "train_participants": 5,
+        "valid_participants": 2,
+        "valid_classes": {
+          "correct": 6,
+          "incorrect": 5
+        },
+        "participant_overlap": []
+      },
+      {
+        "fold": 4,
+        "train_samples": 25,
+        "valid_samples": 3,
+        "train_participants": 5,
+        "valid_participants": 2,
+        "valid_classes": {
+          "correct": 2,
+          "incorrect": 1
+        },
+        "participant_overlap": []
+      },
+      {
+        "fold": 5,
+        "train_samples": 23,
+        "valid_samples": 5,
+        "train_participants": 6,
+        "valid_participants": 1,
+        "valid_classes": {
+          "incorrect": 3,
+          "correct": 2
+        },
+        "participant_overlap": []
+      }
+    ]
+  }
+}

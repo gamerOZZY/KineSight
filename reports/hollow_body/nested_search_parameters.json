@@ -1,0 +1,71 @@
+[
+  {
+    "fold": 1,
+    "best_params": {
+      "classifier__gamma": "auto",
+      "classifier__class_weight": "balanced",
+      "classifier__C": 0.5
+    },
+    "inner_best_f1_macro": 0.6684742158426369,
+    "train_participants": 7,
+    "validation_participants": [
+      "P3",
+      "P4"
+    ]
+  },
+  {
+    "fold": 2,
+    "best_params": {
+      "classifier__gamma": 0.1,
+      "classifier__class_weight": null,
+      "classifier__C": 0.5
+    },
+    "inner_best_f1_macro": 0.848784618908458,
+    "train_participants": 8,
+    "validation_participants": [
+      "P1"
+    ]
+  },
+  {
+    "fold": 3,
+    "best_params": {
+      "classifier__gamma": "scale",
+      "classifier__class_weight": "balanced",
+      "classifier__C": 1.0
+    },
+    "inner_best_f1_macro": 0.7122692361402039,
+    "train_participants": 7,
+    "validation_participants": [
+      "P6",
+      "P9"
+    ]
+  },
+  {
+    "fold": 4,
+    "best_params": {
+      "classifier__gamma": 0.01,
+      "classifier__class_weight": "balanced",
+      "classifier__C": 20.0
+    },
+    "inner_best_f1_macro": 0.5171335200746966,
+    "train_participants": 6,
+    "validation_participants": [
+      "P10",
+      "P2",
+      "P5"
+    ]
+  },
+  {
+    "fold": 5,
+    "best_params": {
+      "classifier__gamma": "auto",
+      "classifier__class_weight": "balanced",
+      "classifier__C": 1.0
+    },
+    "inner_best_f1_macro": 0.7832179378928604,
+    "train_participants": 8,
+    "validation_participants": [
+      "P7"
+    ]
+  }
+]

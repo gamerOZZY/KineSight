@@ -1,4 +1,4 @@
-# Instrucciones pulidas, tengo que voler a revisarlas por si las dudas lol
+
 # ENTREGABLE 1: Entrenamiento de modelos ML y evaluación de ejercicios en tiempo real
 
 ## 1. Rol y objetivo

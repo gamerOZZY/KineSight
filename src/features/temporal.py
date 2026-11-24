@@ -10,8 +10,6 @@ import numpy as np
 import pandas as pd
 
 from src.features.biomechanics import (
-    ANGLE_FEATURE_NAMES,
-    DEVIATION_FEATURE_NAMES,
     HOLLOW_BODY_FEATURE_NAMES,
     PLANK_FEATURE_NAMES,
 )
@@ -80,6 +78,56 @@ def _statistics(
     }
 
 
+def aggregate_feature_window(
+    samples: pd.DataFrame,
+    exercise: str,
+    *,
+    window_start_ms: int,
+    min_valid_frames: int = MIN_VALID_FRAMES,
+) -> tuple[dict[str, float | int | None], list[dict[str, Any]]]:
+    """Aggregate already-resampled frame features using the Gold window formulas."""
+    if exercise == "plank":
+        feature_names = PLANK_FEATURE_NAMES
+    elif exercise == "hollow_body":
+        feature_names = HOLLOW_BODY_FEATURE_NAMES
+    else:
+        raise ValueError(f"Ejercicio no soportado: {exercise}")
+    if min_valid_frames < 1:
+        raise ValueError("min_valid_frames debe ser positivo.")
+    if "timestamp_ms" not in samples:
+        raise ValueError("Falta timestamp_ms en las muestras de la ventana.")
+
+    output: dict[str, float | int | None] = {}
+    invalid: list[dict[str, Any]] = []
+    for feature_name in feature_names:
+        if feature_name not in samples:
+            raise ValueError(f"Falta la característica {feature_name}.")
+        numeric_values = pd.to_numeric(samples[feature_name], errors="coerce")
+        valid_mask = numeric_values.notna() & np.isfinite(numeric_values)
+        values = numeric_values[valid_mask].astype(float).tolist()
+        timestamps = samples.loc[valid_mask, "timestamp_ms"].astype(int).tolist()
+        output[f"{feature_name}_valid_frames"] = len(values)
+        if len(values) < min_valid_frames:
+            for statistic in STATISTICS:
+                output[f"{feature_name}_{statistic}"] = None
+            invalid.append(
+                {
+                    "scope": "window_feature",
+                    "feature_name": feature_name,
+                    "reason": f"insufficient_valid_frames:{len(values)}<{min_valid_frames}",
+                    "timestamp_ms": window_start_ms,
+                }
+            )
+            continue
+        output.update(
+            {
+                f"{feature_name}_{name}": value
+                for name, value in _statistics(values, timestamps, window_start_ms).items()
+            }
+        )
+    return output, invalid
+
+
 def build_temporal_windows(
     frame_features: pd.DataFrame,
     exercise: str,
@@ -146,34 +194,24 @@ def build_temporal_windows(
                 "n_sampled_frames": int(len(sampled)),
                 "n_valid_pose_frames": int(sampled["pose_detected"].fillna(False).astype(bool).sum()),
             }
-            for feature_name in feature_names:
-                numeric_values = pd.to_numeric(sampled[feature_name], errors="coerce")
-                valid_mask = numeric_values.notna() & np.isfinite(numeric_values)
-                values = numeric_values[valid_mask].astype(float).tolist()
-                timestamps = sampled.loc[valid_mask, "timestamp_ms"].astype(int).tolist()
-                row[f"{feature_name}_valid_frames"] = len(values)
-                if len(values) < min_valid_frames:
-                    for statistic in STATISTICS:
-                        row[f"{feature_name}_{statistic}"] = None
-                    invalid.append(
-                        {
-                            "video_id": first["video_id"],
-                            "frame_id": None,
-                            "timestamp_ms": start_ms,
-                            "scope": "window_feature",
-                            "landmark_name": None,
-                            "field": None,
-                            "feature_name": feature_name,
-                            "reason": f"insufficient_valid_frames:{len(values)}<{min_valid_frames}",
-                            "value": None,
-                        }
-                    )
-                    continue
-                row.update(
-                    {
-                        f"{feature_name}_{name}": value
-                        for name, value in _statistics(values, timestamps, start_ms).items()
-                    }
-                )
+            window_features, feature_invalid = aggregate_feature_window(
+                sampled,
+                exercise,
+                window_start_ms=start_ms,
+                min_valid_frames=min_valid_frames,
+            )
+            row.update(window_features)
+            invalid.extend(
+                {
+                    "video_id": first["video_id"],
+                    "frame_id": None,
+                    "timestamp_ms": start_ms,
+                    "landmark_name": None,
+                    "field": None,
+                    "value": None,
+                    **observation,
+                }
+                for observation in feature_invalid
+            )
             rows.append(row)
     return pd.DataFrame(rows), invalid

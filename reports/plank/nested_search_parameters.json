@@ -1,0 +1,79 @@
+[
+  {
+    "fold": 1,
+    "best_params": {
+      "classifier__n_estimators": 250,
+      "classifier__min_samples_leaf": 1,
+      "classifier__max_features": "sqrt",
+      "classifier__max_depth": 3,
+      "classifier__class_weight": "balanced"
+    },
+    "inner_best_f1_macro": 0.5079365079365079,
+    "train_participants": 6,
+    "validation_participants": [
+      "P3"
+    ]
+  },
+  {
+    "fold": 2,
+    "best_params": {
+      "classifier__n_estimators": 400,
+      "classifier__min_samples_leaf": 4,
+      "classifier__max_features": 1.0,
+      "classifier__max_depth": 5,
+      "classifier__class_weight": "balanced"
+    },
+    "inner_best_f1_macro": 0.8748057498057498,
+    "train_participants": 6,
+    "validation_participants": [
+      "P2"
+    ]
+  },
+  {
+    "fold": 3,
+    "best_params": {
+      "classifier__n_estimators": 100,
+      "classifier__min_samples_leaf": 2,
+      "classifier__max_features": "sqrt",
+      "classifier__max_depth": null,
+      "classifier__class_weight": null
+    },
+    "inner_best_f1_macro": 0.38888888888888884,
+    "train_participants": 5,
+    "validation_participants": [
+      "P5",
+      "P6"
+    ]
+  },
+  {
+    "fold": 4,
+    "best_params": {
+      "classifier__n_estimators": 100,
+      "classifier__min_samples_leaf": 2,
+      "classifier__max_features": "sqrt",
+      "classifier__max_depth": null,
+      "classifier__class_weight": "balanced"
+    },
+    "inner_best_f1_macro": 0.6955266955266955,
+    "train_participants": 5,
+    "validation_participants": [
+      "P4",
+      "P7"
+    ]
+  },
+  {
+    "fold": 5,
+    "best_params": {
+      "classifier__n_estimators": 250,
+      "classifier__min_samples_leaf": 1,
+      "classifier__max_features": 0.7,
+      "classifier__max_depth": 3,
+      "classifier__class_weight": "balanced"
+    },
+    "inner_best_f1_macro": 0.8027777777777777,
+    "train_participants": 6,
+    "validation_participants": [
+      "P1"
+    ]
+  }
+]

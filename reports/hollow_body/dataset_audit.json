@@ -1,0 +1,312 @@
+{
+  "exercise": "hollow_body",
+  "samples": 78,
+  "participants": 9,
+  "videos": 17,
+  "windows": 78,
+  "predictor_count": 48,
+  "predictors": [
+    "shoulder_hip_knee_angle_mean",
+    "shoulder_hip_knee_angle_std",
+    "shoulder_hip_knee_angle_min",
+    "shoulder_hip_knee_angle_max",
+    "shoulder_hip_knee_angle_range",
+    "shoulder_hip_knee_angle_slope",
+    "hip_knee_ankle_angle_mean",
+    "hip_knee_ankle_angle_std",
+    "hip_knee_ankle_angle_min",
+    "hip_knee_ankle_angle_max",
+    "hip_knee_ankle_angle_range",
+    "hip_knee_ankle_angle_slope",
+    "torso_orientation_mean",
+    "torso_orientation_std",
+    "torso_orientation_min",
+    "torso_orientation_max",
+    "torso_orientation_range",
+    "torso_orientation_slope",
+    "leg_elevation_angle_mean",
+    "leg_elevation_angle_std",
+    "leg_elevation_angle_min",
+    "leg_elevation_angle_max",
+    "leg_elevation_angle_range",
+    "leg_elevation_angle_slope",
+    "arm_alignment_angle_mean",
+    "arm_alignment_angle_std",
+    "arm_alignment_angle_min",
+    "arm_alignment_angle_max",
+    "arm_alignment_angle_range",
+    "arm_alignment_angle_slope",
+    "head_alignment_angle_mean",
+    "head_alignment_angle_std",
+    "head_alignment_angle_min",
+    "head_alignment_angle_max",
+    "head_alignment_angle_range",
+    "head_alignment_angle_slope",
+    "shoulder_hip_distance_norm_mean",
+    "shoulder_hip_distance_norm_std",
+    "shoulder_hip_distance_norm_min",
+    "shoulder_hip_distance_norm_max",
+    "shoulder_hip_distance_norm_range",
+    "shoulder_hip_distance_norm_slope",
+    "hip_ankle_distance_norm_mean",
+    "hip_ankle_distance_norm_std",
+    "hip_ankle_distance_norm_min",
+    "hip_ankle_distance_norm_max",
+    "hip_ankle_distance_norm_range",
+    "hip_ankle_distance_norm_slope"
+  ],
+  "class_counts": {
+    "incorrect": 45,
+    "correct": 33
+  },
+  "participants_per_class": {
+    "correct": 7,
+    "incorrect": 6
+  },
+  "samples_per_participant": {
+    "P1": 12,
+    "P10": 7,
+    "P2": 5,
+    "P3": 10,
+    "P4": 16,
+    "P5": 4,
+    "P6": 3,
+    "P7": 13,
+    "P9": 8
+  },
+  "samples_per_video": {
+    "P01": 2,
+    "P02": 5,
+    "P03": 5,
+    "P04": 5,
+    "P05": 5,
+    "P06": 2,
+    "P07": 2,
+    "P08": 3,
+    "P09": 4,
+    "P10": 4,
+    "P11": 6,
+    "P12": 5,
+    "P13": 4,
+    "P14": 2,
+    "P15": 9,
+    "P16": 8,
+    "P17": 7
+  },
+  "error_type_counts": {
+    "<null>": 78
+  },
+  "missing_values_per_feature": {
+    "shoulder_hip_knee_angle_mean": 10,
+    "shoulder_hip_knee_angle_std": 10,
+    "shoulder_hip_knee_angle_min": 10,
+    "shoulder_hip_knee_angle_max": 10,
+    "shoulder_hip_knee_angle_range": 10,
+    "shoulder_hip_knee_angle_slope": 10,
+    "hip_knee_ankle_angle_mean": 11,
+    "hip_knee_ankle_angle_std": 11,
+    "hip_knee_ankle_angle_min": 11,
+    "hip_knee_ankle_angle_max": 11,
+    "hip_knee_ankle_angle_range": 11,
+    "hip_knee_ankle_angle_slope": 11,
+    "torso_orientation_mean": 10,
+    "torso_orientation_std": 10,
+    "torso_orientation_min": 10,
+    "torso_orientation_max": 10,
+    "torso_orientation_range": 10,
+    "torso_orientation_slope": 10,
+    "leg_elevation_angle_mean": 11,
+    "leg_elevation_angle_std": 11,
+    "leg_elevation_angle_min": 11,
+    "leg_elevation_angle_max": 11,
+    "leg_elevation_angle_range": 11,
+    "leg_elevation_angle_slope": 11,
+    "arm_alignment_angle_mean": 13,
+    "arm_alignment_angle_std": 13,
+    "arm_alignment_angle_min": 13,
+    "arm_alignment_angle_max": 13,
+    "arm_alignment_angle_range": 13,
+    "arm_alignment_angle_slope": 13,
+    "head_alignment_angle_mean": 10,
+    "head_alignment_angle_std": 10,
+    "head_alignment_angle_min": 10,
+    "head_alignment_angle_max": 10,
+    "head_alignment_angle_range": 10,
+    "head_alignment_angle_slope": 10,
+    "shoulder_hip_distance_norm_mean": 11,
+    "shoulder_hip_distance_norm_std": 11,
+    "shoulder_hip_distance_norm_min": 11,
+    "shoulder_hip_distance_norm_max": 11,
+    "shoulder_hip_distance_norm_range": 11,
+    "shoulder_hip_distance_norm_slope": 11,
+    "hip_ankle_distance_norm_mean": 11,
+    "hip_ankle_distance_norm_std": 11,
+    "hip_ankle_distance_norm_min": 11,
+    "hip_ankle_distance_norm_max": 11,
+    "hip_ankle_distance_norm_range": 11,
+    "hip_ankle_distance_norm_slope": 11
+  },
+  "infinite_values_per_feature": {
+    "shoulder_hip_knee_angle_mean": 0,
+    "shoulder_hip_knee_angle_std": 0,
+    "shoulder_hip_knee_angle_min": 0,
+    "shoulder_hip_knee_angle_max": 0,
+    "shoulder_hip_knee_angle_range": 0,
+    "shoulder_hip_knee_angle_slope": 0,
+    "hip_knee_ankle_angle_mean": 0,
+    "hip_knee_ankle_angle_std": 0,
+    "hip_knee_ankle_angle_min": 0,
+    "hip_knee_ankle_angle_max": 0,
+    "hip_knee_ankle_angle_range": 0,
+    "hip_knee_ankle_angle_slope": 0,
+    "torso_orientation_mean": 0,
+    "torso_orientation_std": 0,
+    "torso_orientation_min": 0,
+    "torso_orientation_max": 0,
+    "torso_orientation_range": 0,
+    "torso_orientation_slope": 0,
+    "leg_elevation_angle_mean": 0,
+    "leg_elevation_angle_std": 0,
+    "leg_elevation_angle_min": 0,
+    "leg_elevation_angle_max": 0,
+    "leg_elevation_angle_range": 0,
+    "leg_elevation_angle_slope": 0,
+    "arm_alignment_angle_mean": 0,
+    "arm_alignment_angle_std": 0,
+    "arm_alignment_angle_min": 0,
+    "arm_alignment_angle_max": 0,
+    "arm_alignment_angle_range": 0,
+    "arm_alignment_angle_slope": 0,
+    "head_alignment_angle_mean": 0,
+    "head_alignment_angle_std": 0,
+    "head_alignment_angle_min": 0,
+    "head_alignment_angle_max": 0,
+    "head_alignment_angle_range": 0,
+    "head_alignment_angle_slope": 0,
+    "shoulder_hip_distance_norm_mean": 0,
+    "shoulder_hip_distance_norm_std": 0,
+    "shoulder_hip_distance_norm_min": 0,
+    "shoulder_hip_distance_norm_max": 0,
+    "shoulder_hip_distance_norm_range": 0,
+    "shoulder_hip_distance_norm_slope": 0,
+    "hip_ankle_distance_norm_mean": 0,
+    "hip_ankle_distance_norm_std": 0,
+    "hip_ankle_distance_norm_min": 0,
+    "hip_ankle_distance_norm_max": 0,
+    "hip_ankle_distance_norm_range": 0,
+    "hip_ankle_distance_norm_slope": 0
+  },
+  "constant_features": [],
+  "duplicate_video_window_keys": 0,
+  "all_scalar_duplicate_rows": 0,
+  "metadata_columns": [
+    "video_id",
+    "participant_id",
+    "exercise",
+    "window_start_ms",
+    "window_end_ms",
+    "label",
+    "error_type",
+    "camera_view",
+    "source_video"
+  ],
+  "label_only_participants": {
+    "P10": [
+      [
+        "P10",
+        "incorrect"
+      ]
+    ],
+    "P2": [
+      [
+        "P2",
+        "correct"
+      ]
+    ],
+    "P3": [
+      [
+        "P3",
+        "correct"
+      ]
+    ],
+    "P6": [
+      [
+        "P6",
+        "correct"
+      ]
+    ],
+    "P9": [
+      [
+        "P9",
+        "incorrect"
+      ]
+    ]
+  },
+  "outer_cv": {
+    "strategy": "StratifiedGroupKFold",
+    "n_splits": 5,
+    "seed": 42,
+    "folds": [
+      {
+        "fold": 1,
+        "train_samples": 52,
+        "valid_samples": 26,
+        "train_participants": 7,
+        "valid_participants": 2,
+        "valid_classes": {
+          "correct": 17,
+          "incorrect": 9
+        },
+        "participant_overlap": []
+      },
+      {
+        "fold": 2,
+        "train_samples": 66,
+        "valid_samples": 12,
+        "train_participants": 8,
+        "valid_participants": 1,
+        "valid_classes": {
+          "incorrect": 10,
+          "correct": 2
+        },
+        "participant_overlap": []
+      },
+      {
+        "fold": 3,
+        "train_samples": 67,
+        "valid_samples": 11,
+        "train_participants": 7,
+        "valid_participants": 2,
+        "valid_classes": {
+          "incorrect": 8,
+          "correct": 3
+        },
+        "participant_overlap": []
+      },
+      {
+        "fold": 4,
+        "train_samples": 62,
+        "valid_samples": 16,
+        "train_participants": 6,
+        "valid_participants": 3,
+        "valid_classes": {
+          "incorrect": 9,
+          "correct": 7
+        },
+        "participant_overlap": []
+      },
+      {
+        "fold": 5,
+        "train_samples": 65,
+        "valid_samples": 13,
+        "train_participants": 8,
+        "valid_participants": 1,
+        "valid_classes": {
+          "incorrect": 9,
+          "correct": 4
+        },
+        "participant_overlap": []
+      }
+    ]
+  }
+}

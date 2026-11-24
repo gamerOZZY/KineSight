@@ -144,6 +144,10 @@ def discover_video_records(
             raise FileNotFoundError(f"No hay frames extraídos para {video_id}: {frame_directory}")
 
         filename_exercise = match.group("exercise").lower()
+        filename_exercise = {"hollow": "hollow_body"}.get(
+            filename_exercise,
+            filename_exercise,
+        )
         filename_label = {"good": "correct", "bad": "incorrect"}[
             match.group("quality").lower()
         ]

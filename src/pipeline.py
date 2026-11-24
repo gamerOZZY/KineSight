@@ -1,4 +1,4 @@
-"""Reproducible command-line pipeline from Silver frames to Gold features."""
+"""Reproducible command-line pipeline from Bronze videos to Gold features."""
 
 from __future__ import annotations
 
@@ -28,6 +28,7 @@ from src.features.temporal import (
     build_temporal_windows,
 )
 from src.pose.landmarks import extract_exercise_landmarks
+from src.preprocessing.preparation import prepare_exercise
 from src.preprocessing.quality_control import quality_frame, write_quality_parquet
 
 LOGGER = logging.getLogger("kinesight.pipeline")
@@ -276,7 +277,12 @@ def run_pipeline(
     target_fps: float = TARGET_FPS,
     min_valid_frames: int = MIN_VALID_FRAMES,
 ) -> dict[str, Any]:
-    """Run landmark extraction and temporal feature engineering for one exercise."""
+    """Run Bronze preparation, Silver landmarks, and temporal Gold features."""
+    preparation_result = prepare_exercise(
+        project_root,
+        exercise,
+        target_fps=sampled_fps,
+    )
     landmark_result = extract_exercise_landmarks(
         project_root,
         exercise,
@@ -292,7 +298,11 @@ def run_pipeline(
         min_valid_frames=min_valid_frames,
         overwrite=overwrite,
     )
-    return {"landmarks": landmark_result, "features": feature_result}
+    return {
+        "preparation": preparation_result,
+        "landmarks": landmark_result,
+        "features": feature_result,
+    }
 
 
 def _configure_logging() -> None:
@@ -307,7 +317,7 @@ def main() -> None:
     parser.add_argument("--exercise", choices=EXERCISES, required=True)
     parser.add_argument(
         "--phase",
-        choices=("landmarks", "features", "all"),
+        choices=("prepare", "landmarks", "features", "all"),
         default="all",
     )
     parser.add_argument(
@@ -332,6 +342,13 @@ def main() -> None:
     model_path = args.model
     if not model_path.is_absolute():
         model_path = project_root / model_path
+    if args.phase in {"prepare", "all"}:
+        result = prepare_exercise(
+            project_root,
+            args.exercise,
+            target_fps=args.sampled_fps,
+        )
+        LOGGER.info("Preparación Bronze/Silver: %s", result)
     if args.phase in {"landmarks", "all"}:
         result = extract_exercise_landmarks(
             project_root,
