@@ -125,82 +125,330 @@ disponibles, no una captura de datos automatizada.
 Metadata versionada: [Plank](data/bronze/metadata/plank_metadata.csv) ·
 [Hollow Body Hold](data/bronze/metadata/hollow_body_metadata.csv).
 
-## 4. Pipeline de datos: Bronze → Silver → Gold
+## 4. Pipeline de datos
 
-### Datos disponibles
+### Flujo general
 
-Las etiquetas se derivan de la carpeta (`correct` o `incorrect`) y se validan
-contra el nombre del archivo (`good_...` o `bad_...`). Los metadatos incluyen
-ID de video, participante, ejercicio, vista de cámara, duración y FPS.
+```text
+Bronze: videos crudos
+  -> validación de nombres y metadata
+  -> extracción de frames a 7 FPS
 
-| Ejercicio | Videos | Participantes | Ventanas Gold | Ventanas `correct` / `incorrect` | Vistas por video |
-|---|---:|---:|---:|---:|---|
-| Plank | 14 | 7 | 28 | 14 / 14 | `side`: 11; `back-side`: 3 |
-| Hollow Body Hold | 17 | 9 | 78 | 33 / 45 | `side`: 14; `bottom-side`: 1; `top-side`: 1; `bottom`: 1 |
+Silver: imágenes y landmarks
+  -> Pose Landmarker de MediaPipe
+  -> 33 World Landmarks por frame
 
-`error_type` es nulo en las 106 ventanas Gold actuales. Por ello, el problema
-implementado es binario y no permite clasificar tipos de error.
+Feature Engineering
+  -> características geométricas por frame
+  -> ventanas temporales de 2 segundos a 5 FPS
+  -> seis estadísticas por característica
 
-### Bronze y extracción de landmarks
+Gold: datasets de ventanas
+  -> 48 predictores por ventana
+  -> etiqueta correct/incorrect
+  -> información de trazabilidad separada de los predictores
 
-Los videos se esperan bajo `data/bronze/videos/<exercise>/correct/` o
-`incorrect/`; sus metadatos están en
-`data/bronze/metadata/<exercise>_metadata.csv`. Los nombres de video son
-analizados y contrastados con metadata, etiqueta y vista para evitar
-emparejamientos incorrectos.
+Modelos
+  -> validación agrupada por participante
+  -> imputación y escalado dentro de cada Pipeline
+  -> clasificación binary
+```
 
-La extracción guarda frames JPEG en
-`data/silver/extracted_frames/<exercise>/<video_id>/` a **7 FPS**. MediaPipe
-Pose Landmarker se ejecuta en modo `VIDEO`, en orden cronológico, con timestamps
-en milisegundos reconstruidos a partir del FPS del video de origen y del índice
-de frame muestreado. Esa reconstrucción asume video de tasa de cuadros
-constante (CFR).
+### a. Bronze: videos y metadata
 
-Se guarda una fila por frame en
-`data/silver/landmarks/<exercise>/<video_id>.parquet`: 33 World Landmarks con
-`x`, `y`, `z`, `visibility` y `presence` (165 campos), además de metadata,
-timestamp, `pose_detected`, `landmark_count` y `processing_status`. Si una pose
-o un campo opcional no está disponible, se conserva como nulo; no se sustituye
-por cero ni se interpola. Observaciones inválidas de landmarks y características
-se registran en archivos Parquet de quality control.
+Los videos originales se encuentran localmente en:
 
-### Gold y características
+```text
+data/bronze/videos/plank/{correct,incorrect}/
+data/bronze/videos/hollow_body/{correct,incorrect}/
+```
 
-Los datasets de ventanas se encuentran en
-[`data/gold/plank_features.parquet`](data/gold/plank_features.parquet) y
-[`data/gold/hollow_body_features.parquet`](data/gold/hollow_body_features.parquet).
-Cada fila mantiene `video_id`, `participant_id`, ejercicio, `camera_view`,
-`source_video`, etiqueta, `error_type`, límites de ventana, frame IDs y
-contadores de calidad. `window_id` no es una columna: la ventana se identifica
-por video y timestamps.
+No están versionados en Git. La metadata se guarda en:
 
-Los landmarks World usan el origen MediaPipe al centro de caderas; no se aplica
-una traslación adicional. Las características se calculan independientemente
-por variable y se documentan en los diccionarios
-[`plank_feature_dictionary.json`](data/gold/plank_feature_dictionary.json) y
-[`hollow_body_feature_dictionary.json`](data/gold/hollow_body_feature_dictionary.json).
+```text
+data/bronze/metadata/plank_metadata.csv
+data/bronze/metadata/hollow_body_metadata.csv
+```
 
-* **Plank:** ángulos hombro-cadera-tobillo, hombro-cadera-rodilla,
-  cadera-rodilla-tobillo, hombro-codo-muñeca, codo-hombro-cadera y alineación
-  cabeza-cuello; desviación 3D de cadera y desviación vertical respecto de la
-  línea hombros-tobillos, ambas normalizadas por longitud de torso.
-* **Hollow Body Hold:** ángulos hombro-cadera-rodilla y cadera-rodilla-tobillo,
-  orientación del torso, elevación de piernas, alineación de brazos y cabeza,
-  distancia hombro-cadera normalizada por hombro-tobillo y distancia
-  cadera-tobillo normalizada por longitud de torso.
+Cada archivo contiene `video_id`, `Participant_id`, `exercise` o `excercise`,
+`label`, `camera_view`, `duration_in_seconds` y `fps`.
 
-Estas medidas son proxies geométricos de la pose; MediaPipe no mide
-directamente el contacto lumbar con el suelo.
+La transformación valida que:
 
-Las características se remuestrean a una grilla objetivo de **5 FPS** en
-ventanas no solapadas de **2 segundos**, con tolerancia de 100 ms. Cada
-característica exige al menos **5 observaciones válidas**; si no alcanza ese
-mínimo, sus estadísticas quedan nulas y la observación se registra en QC. No se
-interpolan landmarks. Por característica se calculan `mean`, desviación
-estándar poblacional (`std`), `min`, `max`, `range` y pendiente temporal
-(`slope`). Los predictores son 48 columnas biomecánicas/temporales (8
-características × 6 estadísticas). Las columnas `*_valid_frames` y toda la
-metadata se excluyen del entrenamiento.
+- `good_*` esté en `correct/`.
+- `bad_*` esté en `incorrect/`.
+- El ejercicio, participante, etiqueta y vista del nombre coincidan con la metadata.
+- El FPS y la duración calculados coincidan con el video.
+
+Los nombres producen los IDs `P01`, `P02`, `P03`, etc.
+
+Implementación:
+
+- `src/preprocessing/preparation.py`: `_parse_video()`, `_video_properties()`, `create_exercise_metadata()` y `prepare_exercise()`.
+- `src/pipeline.py`: coordinación de la preparación Bronze.
+
+### b. Frames Silver
+
+Los videos se muestrean a **7 FPS**. Por ejemplo, un video de 30 FPS conserva
+aproximadamente un frame cada `30 / 7` frames originales.
+
+Los JPEG se guardan en:
+
+```text
+data/silver/extracted_frames/plank/P01/frame_000001.jpg
+data/silver/extracted_frames/hollow_body/P01/frame_000001.jpg
+```
+
+No se sobrescribe una extracción existente. Si los frames están completos se
+conservan; si están incompletos o fueron muestreados con otra frecuencia, el
+pipeline genera un error.
+
+El índice original y el timestamp se reconstruyen a partir del FPS fuente:
+
+```text
+source_index = redondeo(sample_index * source_fps / 7)
+timestamp_ms = source_index * 1000 / source_fps
+```
+
+Esto supone videos con tasa de cuadros constante.
+
+Implementación:
+
+- `src/preprocessing/preparation.py`: `extract_exercise_frames()` y `_expected_sample_count()`.
+
+### c. Landmarks Silver
+
+Cada frame se procesa con MediaPipe Pose Landmarker en modo `VIDEO`, utilizando:
+
+```text
+models/pose/pose_landmarker.task
+```
+
+Se genera un Parquet por video:
+
+```text
+data/silver/landmarks/plank/P01.parquet
+data/silver/landmarks/hollow_body/P01.parquet
+```
+
+Cada fila corresponde a un frame y contiene identificadores, frame/timestamp,
+etiqueta, vista de cámara, fuente del video y estado de la detección.
+
+También contiene los **33 pose world landmarks**. Por cada landmark se guardan:
+
+```text
+x
+y
+z
+visibility
+presence
+```
+
+Por tanto, hay `33 × 5 = 165` columnas de landmarks.
+
+Si no se detecta una pose:
+
+- `pose_detected = false`.
+- `landmark_count = 0`.
+- Las coordenadas quedan como `null`.
+- Nunca se reemplazan las coordenadas ausentes por cero.
+
+La información de calidad se guarda en:
+
+```text
+data/silver/landmarks/<exercise>/quality_observations.parquet
+data/silver/landmarks/<exercise>/feature_quality_observations.parquet
+```
+
+Implementación:
+
+- `src/pose/landmarks.py`: detección, reconstrucción de timestamps, filas Silver y control de procesamiento.
+- `src/preprocessing/quality_control.py`: validación de coordenadas, presencia, visibilidad y cantidad de landmarks.
+
+### d. Características por frame
+
+Los World Landmarks se convierten en características biomecánicas de forma independiente.
+
+Las operaciones geométricas viven en `src/features/geometry.py`:
+
+- Centroide de hombros, caderas, rodillas, tobillos, codos y muñecas.
+- Distancia euclidiana 3D.
+- Ángulo mediante producto punto.
+- Distancia de un punto a una línea 3D.
+- Componente vertical de la desviación respecto de una línea.
+
+Las características específicas viven en `src/features/biomechanics.py`.
+
+#### Plank
+
+Se generan ocho características:
+
+1. `shoulder_hip_ankle_angle`
+2. `shoulder_hip_knee_angle`
+3. `hip_knee_ankle_angle`
+4. `shoulder_elbow_wrist_angle`
+5. `elbow_shoulder_hip_angle`
+6. `head_neck_alignment`
+7. `hip_deviation_norm`
+8. `hip_vertical_deviation_norm`
+
+Las dos últimas miden la desviación de cadera respecto de una referencia corporal
+y se normalizan con la longitud del torso.
+
+#### Hollow Body Hold
+
+Se generan ocho características:
+
+1. `shoulder_hip_knee_angle`
+2. `hip_knee_ankle_angle`
+3. `torso_orientation`
+4. `leg_elevation_angle`
+5. `arm_alignment_angle`
+6. `head_alignment_angle`
+7. `shoulder_hip_distance_norm`
+8. `hip_ankle_distance_norm`
+
+MediaPipe no mide directamente el contacto lumbar con el suelo, por lo que no
+existe una característica que represente dicho contacto.
+
+Los landmarks World ya tienen como origen el centro de caderas. No se aplica
+una traslación adicional.
+
+### e. Ventanas temporales y datos Gold
+
+Las características por frame se agrupan en [src/features/temporal.py](src/features/temporal.py).
+
+Configuración:
+
+- Ventanas de **2 segundos**.
+- Frecuencia objetivo de **5 FPS**.
+- Ventanas no solapadas.
+- Tolerancia máxima de remuestreo de 100 ms.
+- Mínimo de **5 frames válidos por característica**.
+- Sin interpolación de landmarks ni características.
+
+Una ventana tiene aproximadamente 10 posiciones objetivo. Para cada posición
+se selecciona el frame real más cercano dentro de la tolerancia y sin reutilizarlo.
+
+Las ventanas se forman por `video_id`, `label` y `error_type`, evitando mezclar
+videos o etiquetas dentro de una misma ventana.
+
+Para cada característica se calculan:
+
+```text
+mean
+std
+min
+max
+range
+slope
+```
+
+La pendiente es la pendiente temporal OLS de la característica respecto a los
+timestamps medidos desde el inicio de la ventana.
+
+Si una característica no alcanza 5 observaciones válidas, sus seis estadísticas
+quedan como `null` y se registra el motivo de insuficiencia.
+
+### f. Datasets Gold
+
+El orquestador [src/pipeline.py](src/pipeline.py) escribe:
+
+```text
+data/gold/plank_features.parquet
+data/gold/hollow_body_features.parquet
+data/gold/plank_feature_dictionary.json
+data/gold/hollow_body_feature_dictionary.json
+```
+
+Una fila representa una ventana temporal e incluye:
+
+- `video_id`
+- `participant_id`
+- `exercise`
+- `camera_view`
+- `source_video`
+- `label`
+- `error_type`
+- `window_start_ms`
+- `window_end_ms`
+- `frame_ids`
+- `n_sampled_frames`
+- `n_valid_pose_frames`
+
+No existe una columna `window_id`; una ventana se identifica por
+`video_id + window_start_ms + window_end_ms`.
+
+### g. Datos que reciben los modelos
+
+Cada ejercicio tiene ocho características base:
+
+```text
+8 características × 6 estadísticas = 48 predictores
+```
+
+Las columnas de predicción tienen nombres como:
+
+```text
+shoulder_hip_ankle_angle_mean
+shoulder_hip_ankle_angle_std
+shoulder_hip_ankle_angle_min
+shoulder_hip_ankle_angle_max
+shoulder_hip_ankle_angle_range
+shoulder_hip_ankle_angle_slope
+```
+
+No se usan como predictores:
+
+- Participant_id.
+- Video_id.
+- Etiqueta.
+- Vista de cámara.
+- Ruta de origen.
+- Timestamps.
+- Frame IDs.
+- Contadores `*_valid_frames`.
+- `error_type`.
+
+El entrenamiento vive en `src/training/experiment.py`.
+
+Las transformaciones finales son:
+
+1. Carga de los Parquet Gold.
+2. Conversión de variables a numérico.
+3. Conversión de infinitos a `null`.
+4. Imputación por mediana dentro de cada fold.
+5. Escalado opcional con `StandardScaler`.
+6. Entrenamiento de los candidatos.
+
+Logistic Regression y SVM usan escalado. Los modelos de árboles no lo usan.
+Todos los pasos se ajustan dentro de un `sklearn.pipeline.Pipeline`.
+
+### h. Validación y artefactos finales
+
+La validación usa `StratifiedGroupKFold`, agrupado por `participant_id`:
+
+- Cinco folds externos.
+- Hasta tres folds internos.
+- Semilla `42`.
+- No se permite que un participante aparezca en train y validación.
+- Train y validación deben contener ambas clases.
+
+Los modelos comparados son Logistic Regression, SVM RBF, Random Forest,
+Extra Trees, HistGradientBoosting y XGBoost.
+
+Los artefactos finales se guardan en:
+
+```text
+models/plank/model.joblib
+models/plank/model_metadata.json
+models/hollow_body/model.joblib
+models/hollow_body/model_metadata.json
+```
+
+La metadata conserva el orden exacto de las características, hiperparámetros,
+métricas, datos de validación y versiones de librerías.
+
 
 ## 5. Metodología de entrenamiento y validación
 
